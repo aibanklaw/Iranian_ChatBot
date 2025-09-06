@@ -1,0 +1,77 @@
+DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="utf-8">
+<title>چت بات بانکی</title>
+<style>
+body{margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#0f1724;font-family:sans-serif;color:#fff}
+.chat{width:400px;height:600px;display:flex;flex-direction:column;background:#111;border-radius:12px;overflow:hidden}
+.msgs{flex:1;padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.msg{padding:8px 12px;border-radius:10px;max-width:80%}
+.user{align-self:flex-end;background:#2563eb}
+.bot{align-self:flex-start;background:#374151}
+.typing{align-self:flex-start;background:#222;color:#aaa;font-size:13px;padding:8px 12px;border-radius:10px;display:flex;gap:4px;align-items:center}
+.dot{width:6px;height:6px;background:#aaa;border-radius:50%;animation:bounce 1s infinite;}
+.dot:nth-child(2){animation-delay:0.2s}
+.dot:nth-child(3){animation-delay:0.4s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.inputbar{display:flex;border-top:1px solid #333}
+input{flex:1;padding:10px;background:#1e293b;color:#fff;border:none}
+button{background:#2563eb;color:#fff;border:none;padding:10px 16px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="chat">
+  <div class="msgs" id="msgs"></div>
+  <div class="inputbar">
+    <input id="inp" placeholder="پیام بنویسید..."/>
+    <button onclick="send()">ارسال</button>
+  </div>
+</div>
+
+<script>
+const API_KEY="sk-2AzUYsRCUcRaNNeeAcBn3rXFuAB8u1LFNBahImJnBh0EjA6W";
+const msgs=document.getElementById("msgs");
+const inp=document.getElementById("inp");
+
+function addMsg(text,who){
+  const d=document.createElement("div");
+  d.className="msg "+who;
+  d.textContent=text;
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+  return d;
+}
+
+function showTyping(){
+  const d=document.createElement("div");
+  d.className="typing";
+  d.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+  return d;
+}
+
+async function send(){
+  const text=inp.value.trim();
+  if(!text) return;
+  addMsg(text,"user");
+  inp.value="";
+  const typing=showTyping();
+  try{
+    const r=await fetch("https://api.gapgpt.app/v1/chat/completions",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
+      body:JSON.stringify({model:"gpt-4o",messages:[{role:"user",content:text}]})
+    });
+    const data=await r.json();
+    typing.remove();
+    addMsg(data.choices[0].message.content,"bot");
+  }catch(e){
+    typing.remove();
+    addMsg("خطا در دریافت پاسخ","bot");
+  }
+}
+</script>
+</body>
+</html>

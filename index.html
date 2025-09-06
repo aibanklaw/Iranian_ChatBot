@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه ورود و ثبت نام</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+    <div class="container right-panel-active">
+        <!-- Sign Up -->
+        <div class="container__form container--signup">
+            <form action="#" class="form" id="form1">
+                <h2 class="form__title">ثبت نام</h2>
+                <input type="text" placeholder="نام کاربری" class="input" required />
+                <input type="email" placeholder="ایمیل" class="input" required />
+                <input type="password" placeholder="رمز عبور" class="input" required />
+                <button class="btn">ثبت نام</button>
+            </form>
+        </div>
+    
+        <!-- Sign In -->
+        <div class="container__form container--signin">
+            <form action="#" class="form" id="form2">
+                <h2 class="form__title">ورود</h2>
+                <input type="email" placeholder="ایمیل" class="input" required />
+                <input type="password" placeholder="رمز عبور" class="input" required />
+                <a href="#" class="link">فراموشی رمز عبور؟</a>
+                <button class="btn">ورود</button>
+            </form>
+        </div>
+    
+        <!-- Overlay -->
+        <div class="container__overlay">
+            <div class="overlay">
+                <div class="overlay__panel overlay--left">
+                    <button class="btn" id="signIn">ورود</button>
+                </div>
+                <div class="overlay__panel overlay--right">
+                    <button class="btn" id="signUp">ثبت نام</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- اینجا اسکریپت رو اضافه کردیم -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const formSignUp = document.getElementById("form1");
+            const formSignIn = document.getElementById("form2");
+
+            // وقتی کاربر فرم ثبت‌نام رو ارسال کرد
+            formSignUp.addEventListener("submit", (e) => {
+                e.preventDefault();
+                window.location.href = "a.html";
+            });
+
+            // وقتی کاربر فرم ورود رو ارسال کرد
+            formSignIn.addEventListener("submit", (e) => {
+                e.preventDefault();
+                window.location.href = "a.html";
+            });
+
+            // دکمه‌های Overlay هم به همون صفحه می‌برن
+            document.getElementById("signIn").addEventListener("click", () => {
+                window.location.href = "a.html";
+            });
+            document.getElementById("signUp").addEventListener("click", () => {
+                window.location.href = "a.html";
+            });
+        });
+    </script>
+</body>
+</html>
