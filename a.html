@@ -1,80 +1,80 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="utf-8">
-<title>ورود به چت‌بات بانکی</title>
-<style>
-body {
-  margin:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  background:#0f1724;
-  font-family:sans-serif;
-  color:#fff;
-}
-.login-box {
-  width:300px;
-  padding:20px;
-  background:#111;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.3);
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-input {
-  padding:10px;
-  border:none;
-  border-radius:6px;
-  font-size:14px;
-}
-button {
-  padding:10px;
-  background:#2563eb;
-  border:none;
-  border-radius:6px;
-  color:#fff;
-  cursor:pointer;
-  font-size:14px;
-}
-button:hover {
-  background:#1d4ed8;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>صفحه ورود</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body>
+  <div class="container right-panel-active">
+    <!-- بخش ثبت نام (غیرفعال - نمایشی) -->
+    <div class="container__form container--signup">
+      <form action="#" class="form" id="form1">
+        <h2 class="form__title">ثبت نام</h2>
+        <input type="text" placeholder="نام کاربری" class="input" />
+        <input type="password" placeholder="رمز عبور" class="input" />
+        <button type="button" class="btn">ثبت نام</button>
+      </form>
+    </div>
 
-<div class="login-box">
-  <h3>ورود به سیستم</h3>
-  <input type="text" id="username" placeholder="نام کاربری">
-  <input type="password" id="password" placeholder="رمز عبور">
-  <button onclick="login()">ورود</button>
-</div>
+    <!-- بخش ورود -->
+    <div class="container__form container--signin">
+      <form onsubmit="login(event)" class="form" id="form2">
+        <h2 class="form__title">ورود</h2>
+        <input type="text" id="username" placeholder="نام کاربری" class="input" required />
+        <input type="password" id="password" placeholder="رمز عبور" class="input" required />
+        <a href="#" class="link">فراموشی رمز عبور؟</a>
+        <button type="submit" class="btn">ورود</button>
+        <p id="error" style="color:red; display:none;">نام کاربری یا رمز عبور اشتباه است</p>
+      </form>
+    </div>
 
-<script>
-// تعریف کاربران مجاز
-const USERS = {
-  "admin":"1234",
-  "user1":"pass1",
-  "user2":"pass2"
-};
+    <!-- Overlay -->
+    <div class="container__overlay">
+      <div class="overlay">
+        <div class="overlay__panel overlay--left">
+          <button class="btn" id="signIn">ورود</button>
+        </div>
+        <div class="overlay__panel overlay--right">
+          <button class="btn" id="signUp">ثبت نام</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  <script>
+  // تعریف کاربران
+  const USERS = {
+    "admin": "admin123",
+    "user1": "pass1",
+    "user2": "pass2",
+    "user3": "pass3",
+    "user4": "pass4",
+    "user5": "pass5",
+    "user6": "pass6",
+    "user7": "pass7",
+    "user8": "pass8",
+    "user9": "pass9",
+    "user10": "pass10"
+  };
 
-  if (USERS[username] && USERS[username] === password) {
-    // ذخیره وضعیت لاگین
-    localStorage.setItem("loggedIn","true");
-    // انتقال به صفحه چت
-    window.location.href = "index.html";
-  } else {
-    alert("نام کاربری یا رمز عبور اشتباه است ❌");
+  function login(event){
+    event.preventDefault(); // جلوگیری از رفرش
+    const u = document.getElementById("username").value.trim();
+    const p = document.getElementById("password").value.trim();
+    const errorBox = document.getElementById("error");
+
+    if(USERS[u] && USERS[u] === p){
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("username", u);
+      window.location.href = "index.html";
+    } else {
+      errorBox.style.display = "block";
+    }
   }
-}
-</script>
-
+  </script>
+  <script src="script.js"></script>
 </body>
 </html>
