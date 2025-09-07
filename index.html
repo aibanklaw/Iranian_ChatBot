@@ -6,46 +6,28 @@
 <style>
 body {
     margin: 0;
-    height: 100vh;
-    font-family: sans-serif;
-    overflow: hidden;
-    background: #f0f0f0;
     display: flex;
     justify-content: flex-end;
-    align-items: center;
+    align-items: flex-end;
+    height: 100vh;
+    background: #d0f0c0; /* سبز کمرنگ */
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    overflow: hidden;
+    position: relative;
 }
 
-/* کانتینر اصلی با عکس کامل */
-.background {
+/* تصویر سمت چپ */
+.background-logo {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 70%;
+    height: 100vh;
+    background: url('logo banks.jpg') no-repeat left center;
+    background-size: cover;
     z-index: 0;
-}
-
-.full-logo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* لوگوی مرکزی که روی محور خودش می چرخد */
-.center-logo {
-    position: absolute;
-    top: 50%;   /* وسط عکس */
-    left: 50%;
-    width: 100px;
-    height: 100px;
-    transform: translate(-50%, -50%);
-    animation: spin 5s linear infinite;
-    z-index: 1;
-}
-
-@keyframes spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* چت بات سمت راست */
@@ -53,31 +35,37 @@ body {
     width: 30%;
     min-width: 300px;
     max-width: 400px;
-    height: 80%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     background: #ffc0cb; /* صورتی کمرنگ */
     border-radius: 12px;
     overflow: hidden;
-    z-index: 2;
+    z-index: 1;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    padding: 10px;
-    position: relative;
+    padding: 0;
 }
 
-/* تیتر بالای چت بات */
+/* تایتل بالای چت بات */
 .chat-title {
-    background: #fff;
-    color: red;
+    background: #ffffff; /* سفید */
+    color: #ff0000; /* قرمز */
     text-align: center;
-    padding: 8px;
+    padding: 12px;
     font-size: 14px;
     font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 5px;
+    line-height: 1.4;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
 }
 
-/* پیام‌ها */
+/* انیمیشن Fade-in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* فضای چت */
 .msgs {
     flex: 1;
     padding: 10px;
@@ -92,7 +80,18 @@ body {
     border-radius: 12px;
     max-width: 80%;
     font-size: 16px;
-    animation: fadeIn 0.3s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* کلاس برای فعال کردن انیمیشن پیام */
+.msg.show {
+    animation: slideUpFade 0.5s forwards;
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .user {
@@ -109,7 +108,7 @@ body {
 
 .typing {
     align-self: flex-start;
-    background: #ffd1dc;
+    background: #ffe4e1;
     color: #333;
     font-size: 13px;
     padding: 8px 12px;
@@ -135,25 +134,18 @@ body {
     50% { transform: translateY(-6px); }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 .inputbar {
     display: flex;
-    border-top: 1px solid #ccc;
-    margin-top: 10px;
+    border-top: 1px solid #333;
 }
 
 input {
     flex: 1;
     padding: 10px;
-    background: #fff;
-    color: #000;
+    background: #1e293b;
+    color: #fff;
     border: none;
     font-size: 16px;
-    border-radius: 6px;
 }
 
 button {
@@ -163,14 +155,23 @@ button {
     padding: 10px 16px;
     cursor: pointer;
     font-size: 16px;
-    border-radius: 6px;
 }
 
-/* ریسپانسیو */
+/* Media Query برای موبایل */
 @media screen and (max-width: 768px) {
+    body {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .background-logo {
+        position: relative;
+        width: 100%;
+        height: 200px;
+    }
     .chat {
         width: 90%;
-        height: 60%;
+        height: auto;
         margin-top: 10px;
     }
 }
@@ -178,10 +179,7 @@ button {
 </head>
 <body>
 
-<div class="background">
-    <img src="logo banks.jpg" class="full-logo">
-    <img src="logo markazi.jpg" class="center-logo">
-</div>
+<div class="background-logo"></div>
 
 <div class="chat">
   <div class="chat-title">
@@ -200,13 +198,34 @@ const API_KEY="sk-2AzUYsRCUcRaNNeeAcBn3rXFuAB8u1LFNBahImJnBh0EjA6W";
 const msgs = document.getElementById("msgs");
 const inp = document.getElementById("inp");
 
+// صف پیام‌ها برای انیمیشن پشت سر هم
+let messageQueue = [];
+let isAnimating = false;
+
 function addMsg(text, who){
   const d = document.createElement("div");
   d.className = "msg " + who;
   d.textContent = text;
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
+
+  // افزودن به صف انیمیشن
+  messageQueue.push(d);
+  runAnimationQueue();
   return d;
+}
+
+function runAnimationQueue(){
+  if(isAnimating || messageQueue.length === 0) return;
+  isAnimating = true;
+  const msg = messageQueue.shift();
+  msg.classList.add("show");
+  // زمان انیمیشن + فاصله قبل از پیام بعدی
+  setTimeout(() => {
+    isAnimating = false;
+    runAnimationQueue();
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 200); // هر پیام 200ms فاصله دارد
 }
 
 function showTyping(){
