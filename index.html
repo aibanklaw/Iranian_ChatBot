@@ -10,15 +10,13 @@ body {
     justify-content: flex-end;
     align-items: flex-end;
     height: 100vh;
-    background: #d0f0c0; /* سبز کمرنگ */
+    background: #d0f0c0;
     font-family: sans-serif;
     font-size: 16px;
     font-weight: 500;
     overflow: hidden;
     position: relative;
 }
-
-/* تصویر سمت چپ */
 .background-logo {
     position: absolute;
     top: 0;
@@ -29,8 +27,6 @@ body {
     background-size: cover;
     z-index: 0;
 }
-
-/* چت بات سمت راست */
 .chat {
     width: 30%;
     min-width: 300px;
@@ -38,18 +34,15 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #ffc0cb; /* صورتی کمرنگ */
+    background: #ffc0cb;
     border-radius: 12px;
     overflow: hidden;
     z-index: 1;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    padding: 0;
 }
-
-/* تایتل بالای چت بات */
 .chat-title {
-    background: #ffffff; /* سفید */
-    color: #ff0000; /* قرمز */
+    background: #ffffff;
+    color: #ff0000;
     text-align: center;
     padding: 12px;
     font-size: 14px;
@@ -58,14 +51,10 @@ body {
     opacity: 0;
     animation: fadeIn 1s forwards;
 }
-
-/* انیمیشن Fade-in */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
-/* فضای چت */
 .msgs {
     flex: 1;
     padding: 10px;
@@ -74,7 +63,6 @@ body {
     flex-direction: column;
     gap: 8px;
 }
-
 .msg {
     padding: 10px 14px;
     border-radius: 12px;
@@ -83,29 +71,23 @@ body {
     opacity: 0;
     transform: translateY(20px);
 }
-
-/* کلاس برای فعال کردن انیمیشن پیام */
 .msg.show {
     animation: slideUpFade 0.5s forwards;
 }
-
 @keyframes slideUpFade {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
 .user {
     align-self: flex-end;
     background: #4dabf7;
     color: #fff;
 }
-
 .bot {
     align-self: flex-start;
     background: #ffb6c1;
     color: #000;
 }
-
 .typing {
     align-self: flex-start;
     background: #ffe4e1;
@@ -117,7 +99,6 @@ body {
     gap: 4px;
     align-items: center;
 }
-
 .dot {
     width: 6px;
     height: 6px;
@@ -125,20 +106,16 @@ body {
     border-radius: 50%;
     animation: bounce 1s infinite;
 }
-
 .dot:nth-child(2) { animation-delay: 0.2s; }
 .dot:nth-child(3) { animation-delay: 0.4s; }
-
 @keyframes bounce {
     0%,100% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
 }
-
 .inputbar {
     display: flex;
     border-top: 1px solid #333;
 }
-
 input {
     flex: 1;
     padding: 10px;
@@ -147,7 +124,6 @@ input {
     border: none;
     font-size: 16px;
 }
-
 button {
     background: #ff69b4;
     color: #fff;
@@ -156,8 +132,6 @@ button {
     cursor: pointer;
     font-size: 16px;
 }
-
-/* Media Query برای موبایل */
 @media screen and (max-width: 768px) {
     body {
         flex-direction: column;
@@ -194,11 +168,15 @@ button {
 </div>
 
 <script>
-const API_KEY="sk-2AzUYsRCUcRaNNeeAcBn3rXFuAB8u1LFNBahImJnBh0EjA6W";
+// 🚨 بررسی وضعیت لاگین
+if (localStorage.getItem("loggedIn") !== "true") {
+  window.location.href = "a.html";
+}
+
+const API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxx"; // کلید خودتون
 const msgs = document.getElementById("msgs");
 const inp = document.getElementById("inp");
 
-// صف پیام‌ها برای انیمیشن پشت سر هم
 let messageQueue = [];
 let isAnimating = false;
 
@@ -208,8 +186,6 @@ function addMsg(text, who){
   d.textContent = text;
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
-
-  // افزودن به صف انیمیشن
   messageQueue.push(d);
   runAnimationQueue();
   return d;
@@ -220,12 +196,11 @@ function runAnimationQueue(){
   isAnimating = true;
   const msg = messageQueue.shift();
   msg.classList.add("show");
-  // زمان انیمیشن + فاصله قبل از پیام بعدی
   setTimeout(() => {
     isAnimating = false;
     runAnimationQueue();
     msgs.scrollTop = msgs.scrollHeight;
-  }, 200); // هر پیام 200ms فاصله دارد
+  }, 200);
 }
 
 function showTyping(){
@@ -258,7 +233,6 @@ async function send(){
   }
 }
 
-// ارسال با Enter
 inp.addEventListener("keydown", function(e){
     if(e.key === "Enter"){
         send();
