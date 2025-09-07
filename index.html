@@ -2,13 +2,13 @@
 <html lang="fa">
 <head>
 <meta charset="utf-8">
-<title>چت جی‌بی‌تی</title>
+<title>دستیار هوش مصنوعی</title>
 <style>
 body {
     margin: 0;
     display: flex;
     justify-content: flex-end;
-    align-items: center;
+    align-items: flex-end;
     height: 100vh;
     background: #d0f0c0; /* سبز کمرنگ */
     font-family: sans-serif;
@@ -23,7 +23,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 70%; /* حدود سه چهارم صفحه */
+    width: 70%;
     height: 100vh;
     background: url('logo banks.jpg') no-repeat left center;
     background-size: cover;
@@ -35,17 +35,37 @@ body {
     width: 30%;
     min-width: 300px;
     max-width: 400px;
-    height: 80%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    background: #2d6a4f;
+    background: #ffc0cb; /* صورتی کمرنگ */
     border-radius: 12px;
     overflow: hidden;
     z-index: 1;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    padding: 10px;
+    padding: 0;
 }
 
+/* تایتل بالای چت بات */
+.chat-title {
+    background: #ffffff; /* سفید */
+    color: #ff0000; /* قرمز */
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.4;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+/* انیمیشن Fade-in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* فضای چت */
 .msgs {
     flex: 1;
     padding: 10px;
@@ -60,6 +80,18 @@ body {
     border-radius: 12px;
     max-width: 80%;
     font-size: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* کلاس برای فعال کردن انیمیشن پیام */
+.msg.show {
+    animation: slideUpFade 0.5s forwards;
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .user {
@@ -70,13 +102,13 @@ body {
 
 .bot {
     align-self: flex-start;
-    background: #74c69d;
+    background: #ffb6c1;
     color: #000;
 }
 
 .typing {
     align-self: flex-start;
-    background: #95d5b2;
+    background: #ffe4e1;
     color: #333;
     font-size: 13px;
     padding: 8px 12px;
@@ -105,7 +137,6 @@ body {
 .inputbar {
     display: flex;
     border-top: 1px solid #333;
-    margin-top: 10px;
 }
 
 input {
@@ -118,7 +149,7 @@ input {
 }
 
 button {
-    background: #4dabf7;
+    background: #ff69b4;
     color: #fff;
     border: none;
     padding: 10px 16px;
@@ -140,7 +171,7 @@ button {
     }
     .chat {
         width: 90%;
-        height: 60%;
+        height: auto;
         margin-top: 10px;
     }
 }
@@ -151,6 +182,10 @@ button {
 <div class="background-logo"></div>
 
 <div class="chat">
+  <div class="chat-title">
+    دستیار هوش مصنوعی قوانین و مقررات بانکی<br>
+    تهیه شده توسط مصطفی پارسامنش
+  </div>
   <div class="msgs" id="msgs"></div>
   <div class="inputbar">
     <input id="inp" placeholder="پیام بنویسید..."/>
@@ -163,13 +198,34 @@ const API_KEY="sk-2AzUYsRCUcRaNNeeAcBn3rXFuAB8u1LFNBahImJnBh0EjA6W";
 const msgs = document.getElementById("msgs");
 const inp = document.getElementById("inp");
 
+// صف پیام‌ها برای انیمیشن پشت سر هم
+let messageQueue = [];
+let isAnimating = false;
+
 function addMsg(text, who){
   const d = document.createElement("div");
   d.className = "msg " + who;
   d.textContent = text;
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
+
+  // افزودن به صف انیمیشن
+  messageQueue.push(d);
+  runAnimationQueue();
   return d;
+}
+
+function runAnimationQueue(){
+  if(isAnimating || messageQueue.length === 0) return;
+  isAnimating = true;
+  const msg = messageQueue.shift();
+  msg.classList.add("show");
+  // زمان انیمیشن + فاصله قبل از پیام بعدی
+  setTimeout(() => {
+    isAnimating = false;
+    runAnimationQueue();
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 200); // هر پیام 200ms فاصله دارد
 }
 
 function showTyping(){
