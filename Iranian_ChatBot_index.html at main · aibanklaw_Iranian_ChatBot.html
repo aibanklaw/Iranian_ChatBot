@@ -172,6 +172,19 @@ button {
     font-size: 16px;
 }
 
+/* فوتر ثابت */
+.footer {
+    position: fixed;
+    bottom: 5px;
+    left: 10px;
+    font-size: 12px;
+    color: #555;
+    background: rgba(255,255,255,0.7);
+    padding: 4px 8px;
+    border-radius: 6px;
+    line-height: 1.5;
+}
+
 /* Media Query برای موبایل */
 @media screen and (max-width: 768px) {
     body {
@@ -209,6 +222,12 @@ button {
     <input id="inp" placeholder="پیام بنویسید..."/>
     <button onclick="send()">ارسال</button>
   </div>
+</div>
+
+<!-- فوتر ثابت -->
+<div class="footer">
+  ⚠️ پاسخ‌های ارائه‌شده صرفاً جنبه راهنمایی دارد و موضع رسمی بانک مرکزی نمی‌باشد.<br>
+  © 2025 کلیه حقوق این سامانه محفوظ است.
 </div>
 
 <script>
